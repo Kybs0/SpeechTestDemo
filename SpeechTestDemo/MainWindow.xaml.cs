@@ -20,6 +20,14 @@ namespace WpfApp15
             TextBox1.Text = "You have to take capital appreciation of the property into account.你必须将该处房产的资本增值考虑在内。\r\n" +
                             "The direction of the prevailing winds should be taken into account.应该将盛行风的方向考虑在内。\r\n" +
                             "The Villad'Este was a short distance northeast of Rome, nestled high in the Sabine Hills.埃斯泰别墅在罗马东北部不远的地方, 偎倚在萨空山的高处.\r\n";
+
+            Loaded += MainWindow_Loaded;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            var voices = speechSyn.GetInstalledVoices().ToList();
+            VoiceComboBox.ItemsSource = voices;
         }
 
         private void TestSpeechButton_OnClick(object sender, RoutedEventArgs e)
@@ -38,8 +46,13 @@ namespace WpfApp15
             {
                 speechSyn.SpeakAsyncCancel(currentSpokenPrompt);
             }
-
+            speechSyn.Volume = 50;
             speechSyn.Rate = 0;
+            var selectedValue = VoiceComboBox.SelectionBoxItem;
+            if (selectedValue is InstalledVoice voiceInfo)
+            {
+                speechSyn.SelectVoice(voiceInfo.VoiceInfo.Name);
+            }
             speechSyn.SpeakAsync(TextBox1.Text);
         }
         /// <summary>
@@ -58,23 +71,30 @@ namespace WpfApp15
         /// </summary>
         private void ExportAudioButton_OnClick(object sender, RoutedEventArgs e)
         {
-            using (SpeechSynthesizer speechSyn = new SpeechSynthesizer())
+            var currentSpokenPrompt = speechSyn.GetCurrentlySpokenPrompt();
+            if (currentSpokenPrompt != null)
             {
-                speechSyn.Volume = 50;
-                speechSyn.Rate = 0;
-
-                var filePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\{TextBox1.Text}.mp3";
-                if (File.Exists(filePath))
-                {
-                    File.Delete(filePath);
-                }
-
-                speechSyn.SetOutputToWaveFile(filePath);
-                speechSyn.Speak(TextBox1.Text);
-                speechSyn.SetOutputToDefaultAudioDevice();
-
-                MessageBox.Show($"保存录音文件成功，保存路径：{filePath}");
+                speechSyn.SpeakAsyncCancel(currentSpokenPrompt);
             }
+            speechSyn.Volume = 50;
+            speechSyn.Rate = 0;
+            var selectedValue = VoiceComboBox.SelectedValue;
+            if (selectedValue is VoiceInfo voiceInfo)
+            {
+                speechSyn.SelectVoice(voiceInfo.Name);
+            }
+
+            var filePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\{Guid.NewGuid()}.mp3";
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            speechSyn.SetOutputToWaveFile(filePath);
+            speechSyn.Speak(TextBox1.Text);
+            speechSyn.SetOutputToDefaultAudioDevice();
+
+            MessageBox.Show($"保存录音文件成功，保存路径：{filePath}");
         }
     }
 }
