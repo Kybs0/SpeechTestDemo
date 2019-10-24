@@ -1,16 +1,23 @@
-﻿<Window x:Class="WpfApp15.MainWindow"
+﻿<Window x:Class="SpeechTestDemo.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp15"
+        xmlns:local="clr-namespace:SpeechTestDemo"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
         Title="测试朗读Demo" Height="360" Width="600">
     <Grid>
         <StackPanel VerticalAlignment="Center">
-            <TextBox x:Name="TextBox1" Margin="20,10" MinHeight="100" TextWrapping="Wrap"></TextBox>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <ComboBox x:Name="VoiceComboBox" Background="Transparent" Width="160" VerticalContentAlignment="Center" SelectedIndex="0" DisplayMemberPath="VoiceInfo.Name"></ComboBox>
+            <TextBox x:Name="TextBox1" Margin="20,10" MinHeight="140" TextWrapping="Wrap" AcceptsReturn="True"></TextBox>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10 0 0">
+                <GroupBox Header="朗读设置" Padding="10">
+                    <StackPanel>
+                        <ComboBox x:Name="VoiceComboBox" Background="Transparent" Width="160" Height="30"
+                                  VerticalContentAlignment="Center" SelectedIndex="0" DisplayMemberPath="VoiceInfo.Name"
+                                  SizeChanged="VoiceComboBox_OnSizeChanged"></ComboBox>
+                        <Slider x:Name="RateSlide" Maximum="10" Minimum="-10" ValueChanged="RangeBase_OnValueChanged" Margin="0 10 0 0"></Slider>
+                    </StackPanel>
+                </GroupBox>
 
                 <Button x:Name="TestSpeechButton" Click="TestSpeechButton_OnClick" Background="Transparent" Height="30"
                         Content="测试朗读"
