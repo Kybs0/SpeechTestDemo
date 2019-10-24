@@ -41,11 +41,7 @@ namespace WpfApp15
         /// </summary>
         private void PlayAsync()
         {
-            var currentSpokenPrompt = speechSyn.GetCurrentlySpokenPrompt();
-            if (currentSpokenPrompt != null)
-            {
-                speechSyn.SpeakAsyncCancel(currentSpokenPrompt);
-            }
+            speechSyn.SpeakAsyncCancelAll();
             speechSyn.Volume = 50;
             speechSyn.Rate = 0;
             var selectedValue = VoiceComboBox.SelectionBoxItem;
@@ -71,17 +67,13 @@ namespace WpfApp15
         /// </summary>
         private void ExportAudioButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var currentSpokenPrompt = speechSyn.GetCurrentlySpokenPrompt();
-            if (currentSpokenPrompt != null)
-            {
-                speechSyn.SpeakAsyncCancel(currentSpokenPrompt);
-            }
+            speechSyn.SpeakAsyncCancelAll();
             speechSyn.Volume = 50;
             speechSyn.Rate = 0;
             var selectedValue = VoiceComboBox.SelectedValue;
-            if (selectedValue is VoiceInfo voiceInfo)
+            if (selectedValue is InstalledVoice voiceInfo)
             {
-                speechSyn.SelectVoice(voiceInfo.Name);
+                speechSyn.SelectVoice(voiceInfo.VoiceInfo.Name);
             }
 
             var filePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\{Guid.NewGuid()}.mp3";
